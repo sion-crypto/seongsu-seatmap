@@ -37,7 +37,7 @@
   .zoom{margin-left:auto;display:flex;gap:4px;align-items:center;font-size:13px;color:var(--mute)}
   .viewport{flex:1;overflow:auto;position:relative;background:#fff;cursor:grab}
   .viewport.drag{cursor:grabbing}
-  .stage{position:relative}
+  .stage{position:relative;margin:0 auto}
   canvas{display:block}
   .hl{position:absolute;border:3px solid var(--accent);border-radius:6px;box-shadow:0 0 0 4px rgba(204,65,37,.3);pointer-events:none;animation:pulse 1s ease-in-out infinite;display:none}
   @keyframes pulse{50%{box-shadow:0 0 0 12px rgba(204,65,37,.08)}}
@@ -220,6 +220,16 @@ function buildSim(f){
   }
   [...items,...areas].forEach(i=>{if(!i.o)i.o={x:i.x,y:i.y,w:i.w,h:i.h}});
   const all=[...items,...islands,...areas];
+  // 빈 여백 압축: 아이템이 없는 넓은 간격을 줄여 한눈에 보이게 (상대 위치/순서 유지)
+  const GAPMAX=26;
+  for(const ax of [['x','w'],['y','h']]){
+    const [p,s]=ax;
+    const iv=all.map(i=>[i[p],i[p]+i[s]]).sort((a,b)=>a[0]-b[0]);
+    const m=[];for(const v of iv){const l=m[m.length-1];if(l&&v[0]<=l[1])l[1]=Math.max(l[1],v[1]);else m.push([v[0],v[1]])}
+    let ns=m[0][0];const sh=[];
+    m.forEach((v,k)=>{if(k>0)ns+=Math.min(v[0]-m[k-1][1],GAPMAX);sh.push(ns-v[0]);ns+=v[1]-v[0]});
+    all.forEach(i=>{const k=m.findIndex(v=>i[p]>=v[0]-0.01&&i[p]<=v[1]+0.01);i[p]+=sh[k]});
+  }
   const PAD=30,TOP=70;
   const ox=Math.min(...all.map(i=>i.x))-PAD,oy=Math.min(...all.map(i=>i.y))-TOP;
   all.forEach(i=>{i.x-=ox;i.y-=oy});
@@ -358,8 +368,8 @@ function setScale(s){
   scale=Math.min(3,Math.max(.3,s));$('zv').textContent=Math.round(scale*100)+'%';draw();
   vp.scrollLeft=cx*scale-vp.clientWidth/2;vp.scrollTop=cy*scale-vp.clientHeight/2;
 }
-function reset100(){scale=Math.max(1,Math.min(1.6,(vp.clientWidth-24)/dims().W));$("zv").textContent=Math.round(scale*100)+"%";draw();vp.scrollLeft=0;vp.scrollTop=0}
-function fit(){scale=Math.min(3,Math.max(.3,(vp.clientWidth-8)/dims().W));$('zv').textContent=Math.round(scale*100)+'%';draw();vp.scrollLeft=0;vp.scrollTop=0}
+function reset100(){const d=dims();scale=Math.max(.25,Math.min(1.6,(vp.clientWidth-16)/d.W,(vp.clientHeight-16)/d.H));$("zv").textContent=Math.round(scale*100)+"%";draw();vp.scrollLeft=0;vp.scrollTop=0}
+function fit(){reset100()}
 function show(name,box){
   cur=byName[name];hlBox=box||null;
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.f===name));
@@ -419,7 +429,7 @@ function search(){
 q.addEventListener('input',search);
 q.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=res.querySelector('button');if(f)f.click()}if(e.key==='Escape')res.style.display='none'});
 document.addEventListener('click',e=>{if(!e.target.closest('.search'))res.style.display='none'});
-window.addEventListener('resize',()=>{if(cur)draw()});
+window.addEventListener('resize',()=>{if(cur)reset100()});
 show(byName[location.hash.slice(1)]?location.hash.slice(1):'5F');
 </script>
 </body>
