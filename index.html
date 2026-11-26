@@ -306,6 +306,12 @@ function buildSim(f){
     m.forEach((v,k)=>{if(k>0)ns+=Math.min(v[0]-m[k-1][1],GAPMAX);sh.push(ns-v[0]);ns+=v[1]-v[0]});
     all.forEach(i=>{const k=m.findIndex(v=>i[p]>=v[0]-0.01&&i[p]<=v[1]+0.01);i[p]+=sh[k]});
   }
+  // 가로 간격 확대: 카드 크기는 그대로, 위치 간격만 넓힘
+  const KX=1.25,X0=Math.min(...all.map(i=>i.x));
+  const seatList=items.filter(i=>i.t==='seat');
+  islands.forEach(isl=>{const nx=X0+(isl.x-X0)*KX,dx=nx-isl.x;
+    seatList.forEach(s=>{if(!s._m&&s.x>=isl.x-1&&s.x+s.w<=isl.x+isl.w+1&&s.y>=isl.y-1&&s.y+s.h<=isl.y+isl.h+1){s.x+=dx;s._m=1}});isl.x=nx});
+  [...areas,...items.filter(i=>i.t!=='seat')].forEach(i=>{i.x=X0+(i.x-X0)*KX});
   const PAD=30,TOP=70;
   const ox=Math.min(...all.map(i=>i.x))-PAD,oy=Math.min(...all.map(i=>i.y))-TOP;
   all.forEach(i=>{i.x-=ox;i.y-=oy});
@@ -452,7 +458,7 @@ function setScale(s){
   vp.scrollLeft=cx*scale-vp.clientWidth/2;vp.scrollTop=cy*scale-vp.clientHeight/2;
 }
 function sizeVp(){const bw=document.querySelector(".body").clientWidth,d=dims();if(innerWidth>900){vp.style.flex="none";vp.style.width=Math.min(d.W*scale+20,bw-340)+"px"}else{vp.style.flex="";vp.style.width=""}}
-function reset100(all){const d=dims(),bw=document.querySelector(".body").clientWidth,aw=innerWidth>900?bw-340-24:vp.clientWidth-24;scale=Math.max(.25,Math.min(1.5,aw/d.W,all?(vp.clientHeight-16)/d.H:9));$("zv").textContent=Math.round(scale*100)+"%";draw();vp.scrollLeft=0;vp.scrollTop=0}
+function reset100(all){const d=dims(),bw=document.querySelector(".body").clientWidth,aw=innerWidth>900?bw-340-24:vp.clientWidth-24;scale=all?Math.max(.25,Math.min(1.5,aw/d.W,(vp.clientHeight-16)/d.H)):1;$("zv").textContent=Math.round(scale*100)+"%";draw();vp.scrollLeft=0;vp.scrollTop=0}
 function fit(){reset100(true)}
 function show(name,box){
   cur=byName[name];hlBox=box||null;
