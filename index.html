@@ -167,8 +167,8 @@ function buildSim(f){
     }
     if(DROP.test(first))continue;
     if(/^\d+\.\d$/.test(first)){items.push({t:'room',text:first.replace(/\.0$/,'')+'호',x:b.x,y:b.y,w:b.w,h:b.h});continue}
-    if(/F\s*[-_]\s*(Fast|Different|Essence)/i.test(first)){const nm=first.replace(/^\d+F\s*[-_]?\s*/,'').trim();areas.push(mkRoom(f,b,nm,nm+' 회의실'));continue}
-    if(/^2F_/.test(first)){const nm=first.replace(/^2F_/,'');areas.push(mkRoom(f,b,nm,nm));continue}
+    if(/F\s*[-_]\s*(Fast|Different|Essence)/i.test(first)){const nm=first.replace(/^\d+F\s*[-_]?\s*/,'').trim();areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
+    if(/^2F_/.test(first)){const nm=first.replace(/^2F_/,'');areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
     const label=first.replace(/^\dF_/,'');
     items.push({t:'room',text:label,x:b.x,y:b.y,w:b.w,h:b.h});
   }
@@ -187,7 +187,7 @@ function buildSim(f){
   });
   // ---- 원본 위치 유지 + 겹침 제거 ----
   const hasMain=seats.length||areas.some(a=>a.t==="mroom");
-  if(hasMain)for(let k=items.length-1;k>=0;k--){const i=items[k];if(i.t==="room"&&!/meeting|회의/i.test(i.text))items.splice(k,1)}
+  if(hasMain)for(let k=items.length-1;k>=0;k--){const i=items[k];if(i.t==="room"){if(!/meeting|회의/i.test(i.text))items.splice(k,1);else if(!i.text.startsWith(f.name+"-"))i.text=f.name+"-"+i.text}}
   // 탕비실 안에 다른 이름표(예: 8F Main Saver)가 있으면 탕비실 이름에 합치기
   const pantry=areas.find(a=>a.kind==='pantry');
   if(pantry)for(let k=items.length-1;k>=0;k--){const i=items[k];if(i.t==='room'&&i.x>=pantry.x&&i.x<pantry.x+pantry.w&&i.y>=pantry.y&&i.y<pantry.y+pantry.h){pantry.text='탕비실 · '+i.text;items.splice(k,1)}}
@@ -374,7 +374,7 @@ const names=FLOORS.map(f=>f.name).reverse();
 names.forEach(n=>{const b=document.createElement('button');b.textContent=n;b.dataset.f=n;b.onclick=()=>show(n);$('tabs').appendChild(b)});
 INFO.forEach(([n,org,room])=>{
   const b=document.createElement('button');b.className='fl-item'+(byName[n]?' has':'');b.dataset.f=n;
-  b.innerHTML='<b>'+n+'</b><span class="org">'+org+'</span>'+(room?'<div class="room">'+room+'</div>':'');
+  b.innerHTML='<b>'+n+'</b>';
   if(byName[n])b.onclick=()=>show(n);
   $('side').appendChild(b);
 });
