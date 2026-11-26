@@ -39,21 +39,35 @@
   .viewport.drag{cursor:grabbing}
   .body{flex:1;display:flex;min-height:0}
   .panel{flex:1;min-width:340px;max-width:480px;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
-  .panel .ph{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  .panel .ph b{font-size:15px;color:var(--brand);margin-right:auto}
-  .panel .ph button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 9px;font:inherit;font-size:12px;cursor:pointer}
-  .panel .ph button:hover{background:#eef3fa}
-  .panel .pt{flex:1;overflow:auto}
-  .panel table{border-collapse:collapse;width:100%;font-size:13px}
-  .panel th{position:sticky;top:0;background:#073763;color:#fff;font-weight:700;padding:6px 4px;font-size:12px}
-  .panel td{border:1px solid #e3e6eb;padding:0;height:30px}
-  .panel td.id{width:16%;text-align:center;color:#5b7aa6;background:#f6f8fb;font-size:12px}
-  .panel td.nm{width:34%}
-  .panel td.nm input{width:100%;height:100%;border:0;padding:0 8px;font:inherit;font-size:14px;background:transparent;outline:none}
-  .panel td.nm input:focus{background:#fff8e1;box-shadow:inset 0 0 0 2px var(--accent)}
-  .panel td.nm.ed{background:#e8f5e9}
-  .panel td.nm.empty input::placeholder{color:#b0b6c0}
-  .panel .note{padding:6px 12px;font-size:11px;color:var(--mute);border-top:1px solid var(--line)}
+  .panel .ph{padding:14px 16px 8px;display:flex;align-items:center;gap:8px}
+  .panel .ph b{font-size:17px;color:var(--brand);margin-right:auto;letter-spacing:-.3px}
+  .panel .ph button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 9px;font:inherit;font-size:12px;color:#4b5565;cursor:pointer}
+  .panel .ph button:hover{background:#eef3fa;color:var(--brand)}
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:4px 16px 0}
+  .tiles div{background:#f6f8fb;border-radius:10px;padding:8px 10px;font-size:11px;color:var(--mute)}
+  .tiles div b{display:block;font-size:20px;line-height:1.2;color:var(--ink)}
+  .tiles .u b{color:#1f6f43}.tiles .f b{color:#b3461d}
+  .meter{margin:10px 16px 0;height:6px;border-radius:3px;background:#f0d9d0;overflow:hidden}
+  .meter i{display:block;height:100%;background:linear-gradient(90deg,#2e9e63,#4cc38a);border-radius:3px;transition:width .25s}
+  .ptool{display:flex;gap:8px;padding:12px 16px 10px;align-items:center}
+  .ptool input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:inherit;font-size:13px;background:#f9fafb;outline:none}
+  .ptool input:focus{border-color:var(--brand);background:#fff}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{border:0;background:#fff;padding:6px 10px;font:inherit;font-size:12px;color:#4b5565;cursor:pointer}
+  .seg button.on{background:var(--brand);color:#fff}
+  .panel .pt{flex:1;overflow:auto;border-top:1px solid var(--line);background:#fbfcfd}
+  .plist{column-count:2;column-gap:8px;padding:12px 12px 6px}
+  .it{break-inside:avoid;display:flex;align-items:center;gap:8px;border:1px solid #e3e6eb;border-radius:10px;padding:4px 8px 4px 4px;margin-bottom:7px;background:#fff;transition:border-color .12s,box-shadow .12s}
+  .it .sid{flex:none;min-width:44px;text-align:center;font-size:11px;font-weight:700;color:#4a6fa5;background:#e8effa;border-radius:7px;padding:7px 0}
+  .it input{flex:1;min-width:0;border:0;font:inherit;font-size:14px;font-weight:700;color:var(--ink);outline:none;background:transparent;padding:6px 0}
+  .it input::placeholder{color:#a9afba;font-weight:400}
+  .it.free{border-style:dashed;background:#fafbfc}
+  .it.free .sid{background:#eef0f3;color:#9aa1ad}
+  .it.ed{border-color:#7bc27f;background:#f1faf1}
+  .it.ed::after{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:#2e9e63}
+  .it:hover,.it:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(204,65,37,.14)}
+  .pempty{padding:28px 16px;text-align:center;color:var(--mute);font-size:13px}
+  .panel .note{padding:8px 16px;font-size:11px;color:var(--mute);border-top:1px solid var(--line);line-height:1.5}
   @media(max-width:900px){.body{flex-direction:column}.panel{max-width:none;width:auto;height:40vh;border-left:0;border-top:1px solid var(--line)}}
   .stage{position:relative;margin:0}
   canvas{display:block}
@@ -85,9 +99,12 @@
     <div class="body">
       <div class="viewport" id="vp"><div class="stage" id="stage"><canvas id="cv"></canvas><div class="hl" id="hl"></div></div></div>
       <div class="panel" id="panel">
-        <div class="ph"><b id="ptitle">좌석표</b><button id="pimp">가져오기</button><button id="pexp">내보내기</button><button id="prst">이 층 초기화</button></div>
-        <div class="pt"><table id="ptab"></table></div>
-        <div class="note">성명을 수정하면 배치도에 바로 반영됩니다. 비우면 빈자리로 표시됩니다. 수정 내용은 이 브라우저에만 저장됩니다.</div>
+        <div class="ph"><b id="ptitle">좌석표</b><button id="pimp">가져오기</button><button id="pexp">내보내기</button><button id="prst">초기화</button></div>
+        <div class="tiles" id="ptiles"></div>
+        <div class="meter"><i id="pmeter"></i></div>
+        <div class="ptool"><input id="pq" type="search" placeholder="좌석번호 · 이름 필터" autocomplete="off"><div class="seg" id="pseg"><button data-k="all" class="on">전체</button><button data-k="used">사용</button><button data-k="free">빈자리</button></div></div>
+        <div class="pt"><div id="ptab" class="plist"></div></div>
+        <div class="note">이름을 수정하면 배치도에 바로 반영됩니다. 비우면 빈자리가 됩니다. 수정 내용은 이 브라우저에만 저장됩니다.</div>
       </div>
     </div>
   </main>
@@ -421,43 +438,44 @@ const idNum=id=>id.split('-').map(Number);
 function setSeatName(s,v){s.name=v;s.text=s.id+(v?'\n'+v:'')}
 function recount(f){f.sim.used=seatsOf(f).filter(s=>s.name).length}
 FLOORS.forEach(f=>{seatsOf(f).forEach(s=>{s.name0=s.name;const e=EDITS[f.name];if(e&&Object.prototype.hasOwnProperty.call(e,s.id))setSeatName(s,e[s.id])});recount(f)});
-function renderPanel(){
-  const f=cur,seats=seatsOf(f).slice().sort((a,b)=>{const x=idNum(a.id),y=idNum(b.id);return x[0]-y[0]||x[1]-y[1]});
-  $('ptitle').textContent=f.name+' 좌석표 ('+seats.length+'석)';
-  const t=$('ptab');t.innerHTML='';
-  if(!seats.length){t.innerHTML='<tr><td style="padding:14px;color:#6b7280;border:0">이 층에는 좌석이 없습니다.</td></tr>';return}
-  const half=Math.ceil(seats.length/2);
-  t.innerHTML='<tr><th>구분</th><th>성명</th><th>구분</th><th>성명</th></tr>';
-  const cellFor=s=>{
-    if(!s)return ['<td class="id"></td><td class="nm"></td>'];
-    return s;
-  };
-  for(let r=0;r<half;r++){
-    const tr=document.createElement('tr');
-    [seats[r],seats[r+half]].forEach(s=>{
-      const idc=document.createElement('td');idc.className='id';
-      const nc=document.createElement('td');nc.className='nm';
-      tr.appendChild(idc);tr.appendChild(nc);
-      if(!s)return;
-      idc.textContent=s.id;
-      const inp=document.createElement('input');inp.type='text';inp.value=s.name||'';inp.placeholder='빈자리';
-      const mark=()=>{nc.classList.toggle('ed',s.name!==s.name0);nc.classList.toggle('empty',!s.name)};
-      mark();
-      inp.addEventListener('input',()=>{
-        setSeatName(s,inp.value.trim());
-        const e=EDITS[f.name]=EDITS[f.name]||{};
-        if(s.name===s.name0)delete e[s.id];else e[s.id]=s.name;
-        if(!Object.keys(e).length)delete EDITS[f.name];
-        saveEdits();recount(f);mark();draw();
-      });
-      inp.addEventListener('focus',()=>{hlBox=s;placeHL()});
-      inp.addEventListener('blur',()=>{hlBox=null;placeHL()});
-      inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const all=[...t.querySelectorAll('input')];const i=all.indexOf(inp);(all[i+1]||inp).focus()}});
-      nc.appendChild(inp);
-    });
-    t.appendChild(tr);
-  }
+let pFilter='all',pQuery='';
+function updSum(){
+  const f=cur,seats=seatsOf(f),n=seats.length,u=seats.filter(s=>s.name).length;
+  $('ptiles').innerHTML=n?`<div><b>${n}</b>전체 좌석</div><div class="u"><b>${u}</b>사용 중</div><div class="f"><b>${n-u}</b>빈자리</div>`:'';
+  $('pmeter').style.width=n?(u/n*100)+'%':'0';
+  $('pmeter').parentElement.style.display=n?'':'none';
 }
+function renderPanel(){
+  const f=cur,all=seatsOf(f).slice().sort((a,b)=>{const x=idNum(a.id),y=idNum(b.id);return x[0]-y[0]||x[1]-y[1]});
+  $('ptitle').textContent=f.name+' 좌석표';
+  updSum();
+  const t=$('ptab');t.innerHTML='';
+  if(!all.length){t.innerHTML='<div class="pempty">이 층에는 좌석이 없습니다.</div>';return}
+  const q=pQuery.trim().toLowerCase();
+  const seats=all.filter(s=>(pFilter==='all'||(pFilter==='used'?s.name:!s.name))&&(!q||(s.id+' '+s.name).toLowerCase().includes(q)));
+  if(!seats.length){t.innerHTML='<div class="pempty">조건에 맞는 좌석이 없습니다.</div>';return}
+  seats.forEach(s=>{
+    const row=document.createElement('div');row.className='it';
+    const sid=document.createElement('span');sid.className='sid';sid.textContent=s.id;
+    const inp=document.createElement('input');inp.type='text';inp.value=s.name||'';inp.placeholder='빈자리';inp.setAttribute('aria-label',s.id+' 성명');
+    const mark=()=>{row.classList.toggle('ed',s.name!==s.name0);row.classList.toggle('free',!s.name)};
+    mark();
+    inp.addEventListener('input',()=>{
+      setSeatName(s,inp.value.trim());
+      const e=EDITS[f.name]=EDITS[f.name]||{};
+      if(s.name===s.name0)delete e[s.id];else e[s.id]=s.name;
+      if(!Object.keys(e).length)delete EDITS[f.name];
+      saveEdits();recount(f);mark();updSum();draw();
+    });
+    const on=()=>{hlBox=s;placeHL()},off=()=>{if(document.activeElement!==inp){hlBox=null;placeHL()}};
+    inp.addEventListener('focus',on);inp.addEventListener('blur',()=>{hlBox=null;placeHL()});
+    row.addEventListener('mouseenter',on);row.addEventListener('mouseleave',off);
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const a=[...t.querySelectorAll('input')];const i=a.indexOf(inp);(a[i+1]||inp).focus()}});
+    row.appendChild(sid);row.appendChild(inp);t.appendChild(row);
+  });
+}
+$('pq').addEventListener('input',e=>{pQuery=e.target.value;renderPanel()});
+$('pseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;pFilter=b.dataset.k;[...$('pseg').children].forEach(x=>x.classList.toggle('on',x===b));renderPanel()});
 $('prst').onclick=()=>{
   if(!EDITS[cur.name]||!confirm(cur.name+'의 수정 내용을 모두 되돌릴까요?'))return;
   delete EDITS[cur.name];saveEdits();
