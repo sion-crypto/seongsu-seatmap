@@ -315,6 +315,15 @@ function buildSim(f){
       const m=[[Math.abs(dx),()=>r.x+=dx],[Math.abs(dy),()=>r.y+=dy],[Math.abs(lx),()=>r.x+=lx],[Math.abs(ly),()=>r.y+=ly]].sort((p,q)=>p[0]-q[0])[0];m[1]()}
     placed.push(r);
   }
+  // O.A · Closet & Cabinet 공간(엑셀 노란 음영, 행21~26)과 회의실 사이 출입로의 출입구 표시
+  const fastRoom=areas.find(a=>a.t==='mroom'&&a.name==='Fast');
+  if(fastRoom&&!HO){
+    const c1=f.name==='8F'?57:49;
+    const oa={t:'oa',text:'O.A · Closet & Cabinet',x:f.x[34],y:f.y[21],w:f.x[c1+1]-f.x[34],h:f.y[27]-f.y[21]};
+    areas.push(oa);
+    const gy=oa.y+oa.h,gh=fastRoom.y-gy;
+    if(gh>24)areas.push({t:'door',text:'출입구',x:oa.x,y:gy+6,w:oa.w,h:gh-12});
+  }
   [...items,...areas].forEach(i=>{if(!i.o)i.o={x:i.x,y:i.y,w:i.w,h:i.h}});
   // 3F/4F: 호실 단위로 좌석 묶음을 표준 크기 카드로 재배치하고, 호실 크기를 내용에 맞춰 정리
   if(HO){
@@ -400,6 +409,15 @@ function drawSim(c,sc,W,H,f){
   }
   const fitT=(txt,maxW,px,bold)=>{let p=px;do{c.font=(bold?'bold ':'')+p+'px "Malgun Gothic",sans-serif';p--}while(c.measureText(txt).width>maxW&&p>9);return p};
   for(const a of S.areas){
+    if(a.t==='oa'){
+      c.save();c.shadowColor='rgba(120,100,0,.18)';c.shadowBlur=8;c.shadowOffsetY=2;rr(a.x,a.y,a.w,a.h,12);c.fillStyle='#fff6a8';c.fill();c.restore();
+      rr(a.x,a.y,a.w,a.h,12);c.strokeStyle='#d9bd00';c.lineWidth=1.8;c.stroke();
+      c.textAlign='center';c.fillStyle='#6b5a00';fitT(a.text,a.w-14,16,true);c.fillText(a.text,a.x+a.w/2,a.y+a.h/2+1);
+      continue}
+    if(a.t==='door'){
+      rr(a.x,a.y,a.w,a.h,12);c.fillStyle='rgba(204,65,37,.07)';c.fill();c.setLineDash([7,5]);c.strokeStyle='#cc4125';c.lineWidth=1.6;c.stroke();c.setLineDash([]);
+      c.textAlign='center';c.fillStyle='#a3331a';fitT('🚪 출입구',a.w-14,16,true);c.fillText('🚪 출입구',a.x+a.w/2,a.y+a.h/2+1);
+      continue}
     if(a.t==='ho'){
       rr(a.x,a.y,a.w,a.h,10);c.fillStyle='#fbfcff';c.fill();c.strokeStyle='#8aa4cc';c.lineWidth=2;c.stroke();
       c.textAlign='left';c.fillStyle='#2d4a7a';c.font='bold 14px "Malgun Gothic",sans-serif';c.fillText(a.text,a.x+12,a.y+16);
