@@ -257,7 +257,7 @@ function buildSim(f){
     const iv=all.map(i=>[i[p],i[p]+i[s]]).sort((a,b)=>a[0]-b[0]);
     const m=[];for(const v of iv){const l=m[m.length-1];if(l&&v[0]<=l[1])l[1]=Math.max(l[1],v[1]);else m.push([v[0],v[1]])}
     let ns=m[0][0];const sh=[];
-    m.forEach((v,k)=>{if(k>0)ns+=Math.min(v[0]-m[k-1][1],GAPMAX);sh.push(ns-v[0]);ns+=v[1]-v[0]});
+    m.forEach((v,k)=>{if(k>0)ns+=Math.min(v[0]-m[k-1][1],p==="x"?90:GAPMAX);sh.push(ns-v[0]);ns+=v[1]-v[0]});
     all.forEach(i=>{const k=m.findIndex(v=>i[p]>=v[0]-0.01&&i[p]<=v[1]+0.01);i[p]+=sh[k]});
   }
   const PAD=30,TOP=70;
