@@ -251,13 +251,13 @@ function buildSim(f){
   [...items,...areas].forEach(i=>{if(!i.o)i.o={x:i.x,y:i.y,w:i.w,h:i.h}});
   const all=[...items,...islands,...areas];
   // 빈 여백 압축: 아이템이 없는 넓은 간격을 줄여 한눈에 보이게 (상대 위치/순서 유지)
-  const GAPMAX=26;
+  const GAPMAX=1e6;
   for(const ax of [['x','w'],['y','h']]){
     const [p,s]=ax;
     const iv=all.map(i=>[i[p],i[p]+i[s]]).sort((a,b)=>a[0]-b[0]);
     const m=[];for(const v of iv){const l=m[m.length-1];if(l&&v[0]<=l[1])l[1]=Math.max(l[1],v[1]);else m.push([v[0],v[1]])}
     let ns=m[0][0];const sh=[];
-    m.forEach((v,k)=>{if(k>0)ns+=Math.min(v[0]-m[k-1][1],p==="x"?90:GAPMAX);sh.push(ns-v[0]);ns+=v[1]-v[0]});
+    m.forEach((v,k)=>{if(k>0)ns+=Math.min(v[0]-m[k-1][1],GAPMAX);sh.push(ns-v[0]);ns+=v[1]-v[0]});
     all.forEach(i=>{const k=m.findIndex(v=>i[p]>=v[0]-0.01&&i[p]<=v[1]+0.01);i[p]+=sh[k]});
   }
   const PAD=30,TOP=70;
