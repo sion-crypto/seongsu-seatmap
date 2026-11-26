@@ -194,6 +194,7 @@ function buildSim(f){
     if(/^\d+\.\d$/.test(first)){items.push({t:'room',text:first.replace(/\.0$/,'')+'호',x:b.x,y:b.y,w:b.w,h:b.h});continue}
     if(/F\s*[-_]\s*(Fast|Different|Essence)/i.test(first)){const nm=first.replace(/^\d+F\s*[-_]?\s*/,'').trim();areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
     if(/^2F_/.test(first)){const nm=first.replace(/^2F_/,'');areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
+    if(/^(Studio|Recording)/i.test(first)){const nm=/^Rec/i.test(first)?'Recording RM':'Studio';areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
     const label=first.replace(/^\dF_/,'');
     items.push({t:'room',text:label,x:b.x,y:b.y,w:b.w,h:b.h});
   }
