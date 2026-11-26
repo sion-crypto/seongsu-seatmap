@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>슈퍼패스트 성수 좌석배치도</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Crect width='34' height='34' rx='9' fill='%23073763'/%3E%3Crect x='7' y='8' width='8' height='7' rx='2' fill='%23fff'/%3E%3Crect x='19' y='8' width='8' height='7' rx='2' fill='%23fff' fill-opacity='.6'/%3E%3Crect x='7' y='19' width='8' height='7' rx='2' fill='%23fff' fill-opacity='.6'/%3E%3Crect x='19' y='19' width='8' height='7' rx='2' fill='%23fff'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#073763">
 <style>
   :root{--bg:#f4f5f7;--ink:#1d2330;--mute:#6b7280;--line:#e3e6eb;--brand:#073763;--accent:#cc4125}
   *{box-sizing:border-box}
@@ -69,6 +71,29 @@
   .pempty{padding:28px 16px;text-align:center;color:var(--mute);font-size:13px}
   .panel .note{padding:8px 16px;font-size:11px;color:var(--mute);border-top:1px solid var(--line);line-height:1.5}
   @media(max-width:900px){.body{flex-direction:column}.panel{max-width:none;width:auto;height:40vh;border-left:0;border-top:1px solid var(--line)}}
+  header{background:linear-gradient(135deg,#06294d,#0b4a85);box-shadow:0 2px 10px rgba(6,41,77,.25);position:relative;z-index:5}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand h1{line-height:1.15}
+  .brand small{display:block;font-size:11px;font-weight:400;opacity:.7;letter-spacing:.5px;margin-top:1px}
+  .search input{padding-left:36px;background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.2' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='M21 21l-4.3-4.3'/></svg>") no-repeat 12px center;box-shadow:0 1px 4px rgba(0,0,0,.18);outline:none}
+  .search input:focus{box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+  aside{padding:6px 0;background:#fbfcfe}
+  .fl-item{width:calc(100% - 16px);margin:3px 8px;border-radius:10px;transition:background .12s,transform .12s}
+  .fl-item:not(.has){opacity:.32}
+  .fl-item.on{background:var(--brand);box-shadow:0 3px 8px rgba(7,55,99,.3)}
+  .fl-item.on b{color:#fff}
+  .fl-item.has:hover:not(.on){transform:translateX(2px)}
+  @media(min-width:801px){.tabs{display:none}}
+  .bar{padding:9px 16px;gap:12px}
+  .legend{display:flex;gap:12px;font-size:12px;color:#4b5565;align-items:center}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .legend i{width:12px;height:12px;border-radius:4px;display:inline-block;box-sizing:border-box}
+  .zoom{background:#f1f4f8;border-radius:11px;padding:3px;gap:2px}
+  .zoom button{border:0!important;background:transparent!important;border-radius:8px!important;padding:6px 11px!important;color:#374151}
+  .zoom button:hover{background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .zoom #zv{min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
+  .stat{background:#eaf1fb;padding:5px 11px;border-radius:20px;margin-left:0}
+  button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
   .stage{position:relative;margin:0}
   canvas{display:block}
   .hl{position:absolute;border:3px solid var(--accent);border-radius:6px;box-shadow:0 0 0 4px rgba(204,65,37,.3);pointer-events:none;animation:pulse 1s ease-in-out infinite;display:none}
@@ -79,7 +104,10 @@
 </head>
 <body>
 <header>
-  <h1>슈퍼패스트 성수 좌석배치도</h1>
+  <div class="brand">
+    <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="#fff" fill-opacity=".16"/><rect x="7" y="8" width="8" height="7" rx="2" fill="#fff"/><rect x="19" y="8" width="8" height="7" rx="2" fill="#fff" fill-opacity=".6"/><rect x="7" y="19" width="8" height="7" rx="2" fill="#fff" fill-opacity=".6"/><rect x="19" y="19" width="8" height="7" rx="2" fill="#fff"/></svg>
+    <h1>슈퍼패스트 성수 좌석배치도<small>SUPERFAST SEONGSU · SEAT MAP</small></h1>
+  </div>
   <div class="search">
     <input id="q" type="search" placeholder="이름 / 좌석번호 검색 (예: 키드, 5-4)" autocomplete="off">
     <div class="results" id="res"></div>
@@ -91,6 +119,7 @@
     <div class="bar">
       <div class="tabs" id="tabs"></div>
       <span id="stat" class="stat"></span>
+      <div class="legend"><span><i style="background:#fff;border:1.5px solid #4a78b8;border-top-width:3px"></i>사용</span><span><i style="border:1.5px dashed #aab0bb;background:#f4f5f7"></i>빈자리</span><span><i style="background:#fff1d6;border:1.5px solid #e0a73c"></i>회의실</span></div>
       <div class="zoom">
         <button id="mode">원본 도면 보기</button><button id="png">PNG 저장</button>
         <button id="zo">−</button><span id="zv">100%</span><button id="zi">+</button><button id="zf">맞춤</button>
@@ -286,7 +315,8 @@ function buildSim(f){
 function drawSim(c,sc,W,H,f){
   const S=f.sim;
   c.setTransform(sc,0,0,sc,0,0);
-  c.fillStyle='#f6f8fb';c.fillRect(0,0,W,H);
+  c.fillStyle='#f7f9fc';c.fillRect(0,0,W,H);
+  c.fillStyle='#e4e9f1';for(let gx=14;gx<W;gx+=28)for(let gy=14;gy<H;gy+=28){c.fillRect(gx,gy,1.6,1.6)}
   const rr=(x,y,w,h,r)=>{c.beginPath();c.roundRect?c.roundRect(x,y,w,h,r):c.rect(x,y,w,h)};
   // 제목
   c.textBaseline='middle';c.textAlign='left';
@@ -308,19 +338,25 @@ function drawSim(c,sc,W,H,f){
   const fitT=(txt,maxW,px,bold)=>{let p=px;do{c.font=(bold?'bold ':'')+p+'px "Malgun Gothic",sans-serif';p--}while(c.measureText(txt).width>maxW&&p>9);return p};
   for(const a of S.areas){
     const p=a.t==='mroom'?(PAL[a.name]||PAL.def):FP[a.kind];
-    rr(a.x,a.y,a.w,a.h,10);c.fillStyle=p[0];c.fill();c.strokeStyle=p[1];c.lineWidth=2;c.stroke();
+    c.save();c.shadowColor='rgba(20,50,100,.14)';c.shadowBlur=8;c.shadowOffsetY=2;
+    rr(a.x,a.y,a.w,a.h,12);c.fillStyle=p[0];c.fill();c.restore();
+    rr(a.x,a.y,a.w,a.h,12);c.strokeStyle=p[1];c.lineWidth=1.6;c.stroke();
     c.textAlign='center';c.fillStyle=p[2];
     const t=a.kind==='hall'?'🚪 출입구 · 엘리베이터홀':a.text;
-    fitT(t,a.w-14,a.t==='mroom'?17:15,true);c.fillText(t,a.x+a.w/2,a.y+a.h/2+1);
+    const mr=a.t==='mroom'&&a.h>70;
+    fitT(t,a.w-14,a.t==='mroom'?18:15,true);c.fillText(t,a.x+a.w/2,a.y+a.h/2+(mr?-8:1));
+    if(mr){c.globalAlpha=.7;c.font='12px "Malgun Gothic",sans-serif';c.fillText('회의실',a.x+a.w/2,a.y+a.h/2+14);c.globalAlpha=1}
   }
   for(const i of S.islands){rr(i.x,i.y,i.w,i.h,12);c.fillStyle='#e6ecf5';c.fill()}
   const fit=(txt,maxW,px,bold)=>{let p=px;do{c.font=(bold?'bold ':'')+p+'px "Malgun Gothic",sans-serif';p--}while(c.measureText(txt).width>maxW&&p>8);return p};
   for(const i of S.items){
     if(i.t==='seat'){
       const x=i.x+1.5,y=i.y+1.5,w=i.w-3,h=i.h-3;
-      rr(x,y,w,h,7);
-      if(i.name){c.fillStyle='#fff';c.fill();c.strokeStyle='#b9c6dc';c.lineWidth=1;c.setLineDash([]);c.stroke()}
+      rr(x,y,w,h,8);
+      if(i.name){c.save();c.shadowColor='rgba(20,50,100,.16)';c.shadowBlur=5;c.shadowOffsetY=1.5;c.fillStyle='#fff';c.fill();c.restore();c.strokeStyle='#b9c6dc';c.lineWidth=1;c.setLineDash([]);c.stroke();
+        c.save();rr(x,y,w,h,8);c.clip();c.fillStyle='#4a78b8';c.fillRect(x,y,w,3);c.restore()}
       else{c.fillStyle='#f4f5f7';c.fill();c.strokeStyle='#c4c9d2';c.lineWidth=1;c.setLineDash([4,3]);c.stroke();c.setLineDash([])}
+      if(i===hoverItem){rr(x-1,y-1,w+2,h+2,9);c.strokeStyle='#cc4125';c.lineWidth=2.2;c.stroke()}
       c.textAlign='center';
       c.font='10px "Malgun Gothic",sans-serif';c.fillStyle=i.name?'#5b7aa6':'#9aa1ad';
       c.fillText(i.id,x+w/2,y+h*0.27);
@@ -514,13 +550,24 @@ vp.addEventListener('mousedown',e=>{drag={x:e.clientX,y:e.clientY,l:vp.scrollLef
 window.addEventListener('mouseup',()=>{drag=null;vp.classList.remove('drag')});
 window.addEventListener('mousemove',e=>{if(drag){vp.scrollLeft=drag.l-(e.clientX-drag.x);vp.scrollTop=drag.t-(e.clientY-drag.y)}});
 // tooltip
+let hoverItem=null,downAt=null;
 cv.addEventListener('mousemove',e=>{
   if(drag){tip.style.display='none';return}
   const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/scale,y=(e.clientY-r.top)/scale;
   const b=(mode==='simple'?cur.sim.items.concat(cur.sim.areas):cur.boxes).find(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h&&b.text.length<40);
   if(b){tip.textContent=b.text.replace(/\n/g,'  ·  ');tip.style.display='block';tip.style.left=e.clientX+12+'px';tip.style.top=e.clientY+14+'px'}else tip.style.display='none';
+  const hv=(mode==='simple'&&b&&b.t==='seat')?b:null;
+  cv.style.cursor=hv?'pointer':'';
+  if(hv!==hoverItem){hoverItem=hv;draw()}
 });
-cv.addEventListener('mouseleave',()=>tip.style.display='none');
+cv.addEventListener('mouseleave',()=>{tip.style.display='none';if(hoverItem){hoverItem=null;draw()}});
+cv.addEventListener('mousedown',e=>{downAt=[e.clientX,e.clientY]});
+cv.addEventListener('click',e=>{
+  if(!hoverItem||!downAt||Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1])>4)return;
+  const id=hoverItem.id;pFilter='all';pQuery='';$('pq').value='';[...$('pseg').children].forEach((x,i)=>x.classList.toggle('on',i===0));renderPanel();
+  const inp=[...document.querySelectorAll('#ptab input')].find(i=>i.getAttribute('aria-label')===id+' 성명');
+  if(inp){inp.scrollIntoView({block:'center',behavior:'smooth'});inp.focus();inp.select()}
+});
 // search
 const q=$('q'),res=$('res');
 function search(){
