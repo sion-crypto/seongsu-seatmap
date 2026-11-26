@@ -19,13 +19,13 @@
   .results .fl{color:var(--accent);font-weight:700}
   .results .none{padding:12px;color:var(--mute);font-size:14px}
   .layout{flex:1;display:flex;min-height:0}
-  aside{width:300px;background:#fff;border-right:1px solid var(--line);overflow:auto;flex:none}
-  aside h2{font-size:13px;color:var(--mute);margin:14px 16px 6px;font-weight:700}
-  .fl-item{display:block;width:100%;padding:10px 16px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;font:inherit;cursor:default}
+  aside{width:92px;background:#fff;border-right:1px solid var(--line);overflow:auto;flex:none}
+  aside h2{font-size:12px;color:var(--mute);margin:12px 8px 6px;text-align:center;font-weight:700}
+  .fl-item{display:block;width:100%;padding:11px 8px;text-align:center;border:0;border-bottom:1px solid var(--line);background:none;font:inherit;cursor:default}
   .fl-item.has{cursor:pointer}
   .fl-item.has:hover{background:#eef3fa}
   .fl-item.on{background:#e4edf8;box-shadow:inset 4px 0 0 var(--brand)}
-  .fl-item b{display:inline-block;min-width:38px;font-size:15px;color:var(--brand)}
+  .fl-item b{display:inline-block;font-size:16px;color:var(--brand)}
   .fl-item .org{font-size:13px}
   .fl-item .room{font-size:12px;color:var(--mute);margin:3px 0 0 38px}
   main{flex:1;display:flex;flex-direction:column;min-width:0}
@@ -358,7 +358,7 @@ function setScale(s){
   scale=Math.min(3,Math.max(.3,s));$('zv').textContent=Math.round(scale*100)+'%';draw();
   vp.scrollLeft=cx*scale-vp.clientWidth/2;vp.scrollTop=cy*scale-vp.clientHeight/2;
 }
-function reset100(){scale=1;$("zv").textContent="100%";draw();vp.scrollLeft=0;vp.scrollTop=0}
+function reset100(){scale=Math.max(1,Math.min(1.6,(vp.clientWidth-24)/dims().W));$("zv").textContent=Math.round(scale*100)+"%";draw();vp.scrollLeft=0;vp.scrollTop=0}
 function fit(){scale=Math.min(3,Math.max(.3,(vp.clientWidth-8)/dims().W));$('zv').textContent=Math.round(scale*100)+'%';draw();vp.scrollLeft=0;vp.scrollTop=0}
 function show(name,box){
   cur=byName[name];hlBox=box||null;
