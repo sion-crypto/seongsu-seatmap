@@ -415,8 +415,7 @@ function drawSim(c,sc,W,H,f){
       c.textAlign='center';c.fillStyle='#6b5a00';fitT(a.text,a.w-14,16,true);c.fillText(a.text,a.x+a.w/2,a.y+a.h/2+1);
       continue}
     if(a.t==='door'){
-      rr(a.x,a.y,a.w,a.h,12);c.fillStyle='rgba(204,65,37,.07)';c.fill();c.setLineDash([7,5]);c.strokeStyle='#cc4125';c.lineWidth=1.6;c.stroke();c.setLineDash([]);
-      c.textAlign='center';c.fillStyle='#a3331a';fitT('🚪 출입구',a.w-14,16,true);c.fillText('🚪 출입구',a.x+a.w/2,a.y+a.h/2+1);
+      c.textAlign='center';c.fillStyle='#a3331a';fitT('출입구',a.w-14,16,true);c.fillText('출입구',a.x+a.w/2,a.y+a.h/2+1);
       continue}
     if(a.t==='ho'){
       rr(a.x,a.y,a.w,a.h,10);c.fillStyle='#fbfcff';c.fill();c.strokeStyle='#8aa4cc';c.lineWidth=2;c.stroke();
