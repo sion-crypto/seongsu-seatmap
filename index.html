@@ -319,7 +319,7 @@ function buildSim(f){
   const fastRoom=areas.find(a=>a.t==='mroom'&&a.name==='Fast');
   if(fastRoom&&!HO){
     const c1=f.name==='8F'?57:49;
-    const oa={t:'oa',text:'O.A · Closet & Cabinet',x:f.x[34],y:f.y[21],w:f.x[c1+1]-f.x[34],h:f.y[27]-f.y[21]};
+    const oa={t:'oa',text:'OA / 캐비닛',x:f.x[34],y:f.y[21],w:f.x[c1+1]-f.x[34],h:f.y[27]-f.y[21]};
     areas.push(oa);
     const gy=oa.y+oa.h,gh=fastRoom.y-gy;
     if(gh>24)areas.push({t:'door',text:'출입구',x:oa.x,y:gy+6,w:oa.w,h:gh-12});
@@ -412,7 +412,11 @@ function drawSim(c,sc,W,H,f){
     if(a.t==='oa'){
       c.save();c.shadowColor='rgba(120,100,0,.18)';c.shadowBlur=8;c.shadowOffsetY=2;rr(a.x,a.y,a.w,a.h,12);c.fillStyle='#fff6a8';c.fill();c.restore();
       rr(a.x,a.y,a.w,a.h,12);c.strokeStyle='#d9bd00';c.lineWidth=1.8;c.stroke();
-      c.textAlign='center';c.fillStyle='#6b5a00';fitT(a.text,a.w-14,16,true);c.fillText(a.text,a.x+a.w/2,a.y+a.h/2+1);
+      const my=a.y+a.h/2;
+      c.beginPath();c.moveTo(a.x+10,my);c.lineTo(a.x+a.w-10,my);c.strokeStyle='#d9bd00';c.lineWidth=1.4;c.stroke();
+      c.textAlign='center';c.fillStyle='#6b5a00';
+      fitT('OA',a.w-14,16,true);c.fillText('OA',a.x+a.w/2,a.y+a.h/4+1);
+      fitT('캐비닛',a.w-14,16,true);c.fillText('캐비닛',a.x+a.w/2,a.y+a.h*3/4+1);
       continue}
     if(a.t==='door'){
       c.textAlign='center';c.fillStyle='#a3331a';fitT('출입구',a.w-14,16,true);c.fillText('출입구',a.x+a.w/2,a.y+a.h/2+1);
