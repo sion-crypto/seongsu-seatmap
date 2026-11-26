@@ -243,7 +243,7 @@ function buildSim(f){
     if(f.name==='8F'&&/^(Meeting|Studio|Recording)/i.test(first)){
       // 원본 도면의 벽선 기준 범위 (행시작,열시작,행끝,열끝)
       const R8=/^Meet/i.test(first)?[35,34,51,57,'Fast']:/^Stu/i.test(first)?[52,34,77,57,'Studio']:[78,34,95,57,'Recording RM'];
-      areas.push({t:'mroom',text:f.name+'-'+R8[4],name:R8[4],x:f.x[R8[1]],y:f.y[R8[0]],w:f.x[R8[3]+1]-f.x[R8[1]],h:f.y[R8[2]+1]-f.y[R8[0]]});continue}
+      areas.push({t:'mroom',text:R8[4]==='Fast'?f.name+'-Fast':R8[4],sub:R8[4]==='Fast',name:R8[4],x:f.x[R8[1]],y:f.y[R8[0]],w:f.x[R8[3]+1]-f.x[R8[1]],h:f.y[R8[2]+1]-f.y[R8[0]]});continue}
     if(/^(Studio|Recording)/i.test(first)){const nm=/^Rec/i.test(first)?'Recording RM':'Studio';areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
     const label=first.replace(/^\dF_/,'');
     items.push({t:'room',text:label,x:b.x,y:b.y,w:b.w,h:b.h});
@@ -343,7 +343,7 @@ function drawSim(c,sc,W,H,f){
     rr(a.x,a.y,a.w,a.h,12);c.strokeStyle=p[1];c.lineWidth=1.6;c.stroke();
     c.textAlign='center';c.fillStyle=p[2];
     const t=a.kind==='hall'?'🚪 출입구 · 엘리베이터홀':a.text;
-    const mr=a.t==='mroom'&&a.h>70;
+    const mr=a.t==='mroom'&&a.h>70&&a.sub!==false;
     fitT(t,a.w-14,a.t==='mroom'?18:15,true);c.fillText(t,a.x+a.w/2,a.y+a.h/2+(mr?-8:1));
     if(mr){c.globalAlpha=.7;c.font='12px "Malgun Gothic",sans-serif';c.fillText('회의실',a.x+a.w/2,a.y+a.h/2+14);c.globalAlpha=1}
   }
