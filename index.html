@@ -38,7 +38,7 @@
   .viewport{flex:1;overflow:auto;position:relative;background:#fff;cursor:grab}
   .viewport.drag{cursor:grabbing}
   .body{flex:1;display:flex;min-height:0}
-  .panel{width:430px;flex:none;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  .panel{flex:1;min-width:430px;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
   .panel .ph{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .panel .ph b{font-size:15px;color:var(--brand);margin-right:auto}
   .panel .ph button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 9px;font:inherit;font-size:12px;cursor:pointer}
@@ -329,7 +329,7 @@ function draw(){
   drawSim(ctx,dpr*scale,W,H,f);
   stage.style.width=W*scale+'px';stage.style.height=H*scale+'px';
   $('stat').textContent=f.sim.total?`좌석 ${f.sim.total} · 사용 ${f.sim.used} · 빈자리 ${f.sim.total-f.sim.used}`:'';
-  placeHL();
+  sizeVp();placeHL();
 }
 function savePng(){
   const f=cur,{W,H}=dims(),c=document.createElement('canvas');
@@ -384,7 +384,7 @@ function drawOrig(){
     lines.forEach((l,i)=>ctx.fillText(l,tx,y0+i*lh));
   }
   stage.style.width=f.W*scale+'px';stage.style.height=f.H*scale+'px';
-  placeHL();
+  sizeVp();placeHL();
 }
 function placeHL(){
   if(!hlBox||!cur){hl.style.display='none';return}
@@ -398,7 +398,8 @@ function setScale(s){
   scale=Math.min(3,Math.max(.3,s));$('zv').textContent=Math.round(scale*100)+'%';draw();
   vp.scrollLeft=cx*scale-vp.clientWidth/2;vp.scrollTop=cy*scale-vp.clientHeight/2;
 }
-function reset100(){const d=dims();scale=Math.max(.25,Math.min(1.6,(vp.clientWidth-16)/d.W,(vp.clientHeight-16)/d.H));$("zv").textContent=Math.round(scale*100)+"%";draw();vp.scrollLeft=0;vp.scrollTop=0}
+function sizeVp(){const bw=document.querySelector(".body").clientWidth,d=dims();if(innerWidth>900){vp.style.flex="none";vp.style.width=Math.min(d.W*scale+4,bw-430)+"px"}else{vp.style.flex="";vp.style.width=""}}
+function reset100(){const d=dims(),bw=document.querySelector(".body").clientWidth,aw=innerWidth>900?bw-430:vp.clientWidth;scale=Math.max(.25,Math.min(1.6,(aw-16)/d.W,(vp.clientHeight-16)/d.H));$("zv").textContent=Math.round(scale*100)+"%";draw();vp.scrollLeft=0;vp.scrollTop=0}
 function fit(){reset100()}
 function show(name,box){
   cur=byName[name];hlBox=box||null;
