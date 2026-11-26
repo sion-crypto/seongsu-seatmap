@@ -194,6 +194,10 @@ function buildSim(f){
     if(/^\d+\.\d$/.test(first)){items.push({t:'room',text:first.replace(/\.0$/,'')+'호',x:b.x,y:b.y,w:b.w,h:b.h});continue}
     if(/F\s*[-_]\s*(Fast|Different|Essence)/i.test(first)){const nm=first.replace(/^\d+F\s*[-_]?\s*/,'').trim();areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
     if(/^2F_/.test(first)){const nm=first.replace(/^2F_/,'');areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
+    if(f.name==='8F'&&/^(Meeting|Studio|Recording)/i.test(first)){
+      // 원본 도면의 벽선 기준 범위 (행시작,열시작,행끝,열끝)
+      const R8=/^Meet/i.test(first)?[35,34,51,57,'Fast']:/^Stu/i.test(first)?[52,34,77,57,'Studio']:[78,34,95,57,'Recording RM'];
+      areas.push({t:'mroom',text:f.name+'-'+R8[4],name:R8[4],x:f.x[R8[1]],y:f.y[R8[0]],w:f.x[R8[3]+1]-f.x[R8[1]],h:f.y[R8[2]+1]-f.y[R8[0]]});continue}
     if(/^(Studio|Recording)/i.test(first)){const nm=/^Rec/i.test(first)?'Recording RM':'Studio';areas.push(mkRoom(f,b,nm,f.name+'-'+nm));continue}
     const label=first.replace(/^\dF_/,'');
     items.push({t:'room',text:label,x:b.x,y:b.y,w:b.w,h:b.h});
